@@ -35,6 +35,10 @@ import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -87,6 +91,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     TextView todayIcon;
     ViewPager viewPager;
     TabLayout tabLayout;
+
+    private InterstitialAd mInterstitialAd;
+    private long AdInterTs;
+    private long count;
 
     View appView;
 
@@ -153,6 +161,55 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         // Set autoupdater
         AlarmReceiver.setRecurringAlarm(this);
+
+        this.AdInterTs = System.currentTimeMillis();
+        this.count = 0;
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-7366328858638561/4402681935");
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                requestNewInterstitial();
+                Log.d("hahaha", "ad closed");
+            }
+        });
+        requestNewInterstitial();
+
+        showInterAd();
+    }
+
+    private void requestNewInterstitial() {
+        //Log.d("hahaha", AdRequest.DEVICE_ID_EMULATOR);
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        /*
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+        */
+        mInterstitialAd.loadAd(adRequest);
+    }
+
+
+    public void showInterAd() {
+        long ts = System.currentTimeMillis();
+        long elapsed = ts - this.AdInterTs;
+        this.count++;
+        if (elapsed > 3 * 60 * 1000 || this.count % 10 == 0){
+            this.AdInterTs = ts;
+        }
+        else{
+            Log.d("hahaha", "time too short " + elapsed/1000 + " count:" + this.count);
+            return;
+        }
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+            Log.d("hahaha", "ad 111 ready");
+        }
+        else{
+            Log.d("hahaha", "ad 222 not ready");
+        }
     }
 
     public WeatherRecyclerAdapter getAdapter(int id) {
@@ -170,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onResume() {
         super.onResume();
+        showInterAd();
         if (getTheme(PreferenceManager.getDefaultSharedPreferences(this).getString("theme", "fresh")) != theme) {
             // Restart activity to apply theme
             overridePendingTransition(0, 0);
@@ -197,6 +255,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     private void preloadWeather() {
+        showInterAd();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 
         String lastToday = sp.getString("lastToday", "");
@@ -218,6 +277,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     private void searchCities() {
+        showInterAd();
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(this.getString(R.string.search_title));
         final EditText input = new EditText(this);
@@ -242,6 +302,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     private void saveLocation(String result) {
+        showInterAd();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         recentCity = preferences.getString("city", Constants.DEFAULT_CITY);
 
@@ -329,6 +390,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     private ParseResult parseTodayJson(String result) {
+        showInterAd();
         try {
             JSONObject reader = new JSONObject(result);
 
@@ -401,6 +463,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     private void updateTodayWeatherUI() {
+        showInterAd();
         try {
             if (todayWeather.getCountry().isEmpty()) {
                 preloadWeather();
@@ -600,6 +663,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        showInterAd();
+
         if (id == R.id.action_refresh) {
             if (isNetworkAvailable()) {
                 getTodayWeather();
@@ -687,6 +752,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     void getCityByLocation() {
+        showInterAd();
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
