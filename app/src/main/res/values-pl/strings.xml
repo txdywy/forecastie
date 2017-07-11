@@ -58,12 +58,12 @@
     <string name="setting_unit_hpa">hPa</string>
     <string name="setting_unit_kpa">kPa</string>
     <string name="setting_unit_mmhg">mmHg</string>
-    <string name="speed_unit_kph">km/h</string>
+
 		
 		<string name="speed_unit_mps">m/s</string>
 		<string name="speed_unit_kph">km/h</string>
 		<string name="speed_unit_mph">mph</string>
-		<string name="setting_unit_kn">węzeł (w.)</string>
+
 
     <string name="wind_direction_format_none">Brak</string>
 		<string name="wind_direction_format_arrows">Strzałki</string>
