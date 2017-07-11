@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">मौसम</string>
     <string name="action_about">बारे</string>
     <string name="action_refresh">ताजा</string>
     <string name="action_search">खोज</string>
