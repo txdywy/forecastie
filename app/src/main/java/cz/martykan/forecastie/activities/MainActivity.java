@@ -227,7 +227,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onResume() {
         super.onResume();
-        showInterAd();
         if (getTheme(PreferenceManager.getDefaultSharedPreferences(this).getString("theme", "fresh")) != theme) {
             // Restart activity to apply theme
             overridePendingTransition(0, 0);
@@ -255,7 +254,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     private void preloadWeather() {
-        showInterAd();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 
         String lastToday = sp.getString("lastToday", "");
@@ -277,7 +275,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     private void searchCities() {
-        showInterAd();
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(this.getString(R.string.search_title));
         final EditText input = new EditText(this);
@@ -299,10 +296,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         });
         alert.show();
+        showInterAd();
     }
 
     private void saveLocation(String result) {
-        showInterAd();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         recentCity = preferences.getString("city", Constants.DEFAULT_CITY);
 
@@ -315,6 +312,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             getTodayWeather();
             getLongTermWeather();
         }
+        showInterAd();
     }
 
     private void aboutDialog() {
@@ -390,7 +388,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     private ParseResult parseTodayJson(String result) {
-        showInterAd();
         try {
             JSONObject reader = new JSONObject(result);
 
@@ -463,7 +460,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     private void updateTodayWeatherUI() {
-        showInterAd();
         try {
             if (todayWeather.getCountry().isEmpty()) {
                 preloadWeather();
@@ -521,6 +517,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         todaySunrise.setText(getString(R.string.sunrise) + ": " + timeFormat.format(todayWeather.getSunrise()));
         todaySunset.setText(getString(R.string.sunset) + ": " + timeFormat.format(todayWeather.getSunset()));
         todayIcon.setText(todayWeather.getIcon());
+        showInterAd();
     }
 
     public ParseResult parseLongTermJson(String result) {
@@ -638,6 +635,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             currentPage = 1;
         }
         viewPager.setCurrentItem(currentPage, false);
+        showInterAd();
     }
 
     private boolean isNetworkAvailable() {
@@ -752,7 +750,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     void getCityByLocation() {
-        showInterAd();
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -999,6 +996,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     private int getTheme(String themePref) {
+        showInterAd();
         switch (themePref) {
             case "dark":
                 return R.style.AppTheme_NoActionBar_Dark;
