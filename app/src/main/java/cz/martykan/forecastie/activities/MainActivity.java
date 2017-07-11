@@ -996,7 +996,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     private int getTheme(String themePref) {
-        showInterAd();
         switch (themePref) {
             case "dark":
                 return R.style.AppTheme_NoActionBar_Dark;
